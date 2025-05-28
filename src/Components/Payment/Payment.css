@@ -1,0 +1,473 @@
+/* Variables for easy customization */
+:root {
+  --primary-color: #5c001e; /* University color */
+  --primary-hover: #7a0028; /* Slightly lighter for hover states */
+  --light-bg: #f8fafc;
+  --card-bg: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --success-color: #10b981;
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border-radius: 12px;
+  --transition-speed: 0.3s;
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Main container */
+.payment-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--light-bg);
+  padding: 1rem;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  width: 100%;
+}
+
+/* Payment card */
+.payment-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 600px;
+  padding: 1.5rem;
+  margin: 0 auto;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@media (min-width: 640px) {
+  .payment-container {
+    padding: 2rem;
+  }
+
+  .payment-card {
+    padding: 2.5rem;
+  }
+}
+
+.payment-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+/* Typography */
+.payment-title {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.payment-description {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .payment-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .payment-description {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* QR Code Section */
+.qr-code-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--light-bg);
+  border-radius: var(--border-radius);
+  animation: fadeIn 1.2s ease-out;
+  transition: transform var(--transition-speed);
+}
+
+@media (min-width: 640px) {
+  .qr-code-section {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+  }
+}
+
+.qr-code-section:hover {
+  transform: translateY(-3px);
+}
+
+.qr-code-wrapper {
+  padding: 0.75rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  transition: transform var(--transition-speed);
+}
+
+@media (min-width: 640px) {
+  .qr-code-wrapper {
+    padding: 1rem;
+    margin-bottom: 0;
+  }
+}
+
+.qr-code-wrapper:hover {
+  transform: scale(1.03);
+}
+
+.qr-code {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+}
+
+@media (min-width: 480px) {
+  .qr-code {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+.payment-instructions {
+  color: var(--text-secondary);
+  width: 100%;
+}
+
+.payment-instructions p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  animation: slideIn 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+@media (min-width: 640px) {
+  .payment-instructions p {
+    font-size: 0.95rem;
+  }
+}
+
+.payment-instructions p:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.payment-instructions p:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.payment-instructions p:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.payment-instructions p:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+/* Upload Section */
+.upload-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+@media (min-width: 640px) {
+  .upload-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+  }
+}
+
+.upload-section:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.upload-title {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .upload-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.upload-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .upload-description {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.file-upload-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.custom-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--light-bg);
+  color: var(--text-primary);
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+}
+
+@media (min-width: 640px) {
+  .custom-file-upload {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+.custom-file-upload:hover {
+  background-color: var(--border-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.custom-file-upload:active {
+  transform: translateY(0);
+}
+
+.custom-file-upload::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.custom-file-upload:hover::after {
+  transform: translateX(100%);
+}
+
+.upload-icon {
+  font-size: 1.25rem;
+  animation: bounce 2s infinite;
+  animation-delay: 2s;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-success {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  animation: fadeIn 0.5s ease-out;
+  transition: transform var(--transition-speed);
+  flex-wrap: wrap;
+}
+
+@media (min-width: 480px) {
+  .upload-success {
+    flex-wrap: nowrap;
+  }
+}
+
+.upload-success p {
+  font-size: 0.85rem;
+  word-break: break-word;
+  margin: 0;
+}
+
+@media (min-width: 480px) {
+  .upload-success p {
+    font-size: 0.9rem;
+  }
+}
+
+.upload-success:hover {
+  transform: translateY(-2px);
+}
+
+.success-icon {
+  font-size: 1.25rem;
+  background-color: var(--success-color);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 1.5s infinite;
+  flex-shrink: 0;
+}
+
+/* Submit Button */
+.submit-button {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: fadeIn 1.6s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .submit-button {
+    padding: 1rem;
+  }
+}
+
+.submit-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(92, 0, 30, 0.3);
+}
+
+.submit-button:active {
+  transform: translateY(-1px);
+}
+
+.submit-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.submit-button:hover::after {
+  transform: translateX(100%);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(92, 0, 30, 0.3);
+}
+
+/* For very small screens */
+@media (max-width: 350px) {
+  .payment-card {
+    padding: 1rem;
+  }
+
+  .payment-title {
+    font-size: 1.25rem;
+  }
+
+  .payment-description {
+    font-size: 0.9rem;
+  }
+
+  .qr-code {
+    width: 120px;
+    height: 120px;
+  }
+
+  .upload-title {
+    font-size: 1rem;
+  }
+
+  .upload-description {
+    font-size: 0.85rem;
+  }
+
+  .custom-file-upload {
+    padding: 0.625rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .submit-button {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+}

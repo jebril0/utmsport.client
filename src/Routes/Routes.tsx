@@ -8,6 +8,11 @@ import Registration from "../Components/Registration/Registration";
 import StudentDashboardPage from "../Pages/StudentDashboardPage/StudentDashboardPage";
 import BookingVenuList from "../Components/BookingVenuList/BookingVenuList";
 import Payment from "../Components/Payment/Payment";
+import StaffDashboardPage from "../Pages/StaffPage/StaffDashboardPage";
+import AdminPage from "../Pages/AdminPage/Admindashboard";
+import ForgotPassword from "../Components/ForgotPassword/ForgotPassword";
+import ForgotPasswordPage from "../Pages/ForgotPasswordPage/ForgotPasswordPage";
+import OtpVerificationPage from "../Pages/OtpVerificationPage/OtpVerificationPage";
 
 export const router = createBrowserRouter([
   {
@@ -21,7 +26,16 @@ export const router = createBrowserRouter([
       { path: "booking", element: <BookingPage /> }, // Booking page
       { path: "StudentDashboard", element: <StudentDashboardPage /> }, // Student dashboard
       { path: "venues", element: <BookingVenuList /> }, // Venue list page
-      { path: "payment-confirmation", element: <Payment /> }, // Payment confirmation page
+      { path: "payment-confirmation", element: <Payment /> },
+      {path: "StaffDashboard" , element:<StaffDashboardPage/>},
+      {path: "Admin" , element:<AdminPage/>}
+      ,{path: "ForgotPassword" , element:<ForgotPasswordPage/>}
+            ,{path: "OtpVerification" , element:<OtpVerificationPage/>}
+
+
+      
+      // Payment confirmation page
+      // Payment confirmation page
       //{ path: "staff", element: <StaffPage /> }, // Staff page
     ],
   },

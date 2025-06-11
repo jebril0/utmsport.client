@@ -2,111 +2,107 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { getVenues, bookTimeSlot, type VenueForList } from "../../api/venuesApi" // Updated import
+import { getAllVenuesWithTimeSlots, type VenueForList } from "../../api/venuesApi"
 import BookingVenu from "../BookingVenu/BookingVenu"
 import "./BookingVenuList.css"
 
-const BookingVenuList = () => {
+const BookingVenuList: React.FC = () => {
   const [venues, setVenues] = useState<VenueForList[]>([])
-  const [searchQuery, setSearchQuery] = useState<string>("") // State for venue name search query
-  const [categoryQuery, setCategoryQuery] = useState<string>("") // State for venue category search query
-  const [filteredVenues, setFilteredVenues] = useState<VenueForList[]>([]) // State for filtered venues
-  const [loading, setLoading] = useState<boolean>(true)
+  const [filteredVenues, setFilteredVenues] = useState<VenueForList[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [categoryQuery, setCategoryQuery] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Fetch all venues
-  const fetchVenues = async () => {
-    setLoading(true)
-    try {
-      const response = await getVenues()
-      setVenues(response)
-      setFilteredVenues(response) // Initialize filtered venues
-    } catch (error) {
-      console.error("Error fetching venues:", error)
-    } finally {
-      setLoading(false)
+  useEffect(() => {
+    const fetchVenues = async () => {
+      try {
+        const data = await getAllVenuesWithTimeSlots()
+        console.log("Fetched Venues:", data) // Log the fetched data
+        setVenues(data)
+        setFilteredVenues(data)
+      } catch (err) {
+        setError("Failed to load venues. Please try again later.")
+      } finally {
+        setLoading(false)
+      }
     }
-  }
 
-  // Handle booking a time slot
-  const handleBook = async (timeSlotID: number) => {
-    try {
-      const userEmail = "kamel@graduate.utm.my" // Replace with the logged-in user's email
-      await bookTimeSlot({ timeSlotID, userEmail })
-      alert("Booking successful!")
-      fetchVenues() // Refresh the venues after booking
-    } catch (error) {
-      console.error("Error booking time slot:", error)
-      alert("Failed to book the time slot.")
-    }
-  }
+    fetchVenues()
+  }, [])
 
-  // Handle search by venue name
-  const handleNameSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase()
     setSearchQuery(query)
     filterVenues(query, categoryQuery)
   }
 
-  // Handle search by venue category
   const handleCategorySearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase()
     setCategoryQuery(query)
     filterVenues(searchQuery, query)
   }
 
-  // Filter venues based on name and category
   const filterVenues = (nameQuery: string, categoryQuery: string) => {
+    if (!venues || venues.length === 0) {
+      setFilteredVenues([])
+      return
+    }
+
     const filtered = venues.filter(
-      (venue) => venue.name.toLowerCase().includes(nameQuery) && venue.type.toLowerCase().includes(categoryQuery),
+      (venue) =>
+        (venue.name.toLowerCase().includes(nameQuery) || venue.location.toLowerCase().includes(nameQuery)) &&
+        venue.type.toLowerCase().includes(categoryQuery),
     )
     setFilteredVenues(filtered)
   }
 
-  useEffect(() => {
-    fetchVenues()
-  }, [])
-
   return (
     <div className="booking-list-container">
-      <h1>Available Venues</h1>
+      <h1>Book a Venue</h1>
 
+      {/* Search Bar */}
       <div className="search-container">
-        {/* Search Bar for Venue Name */}
-        <input type="text" placeholder="Search by venue name" value={searchQuery} onChange={handleNameSearch} />
-
-        {/* Search Bar for Venue Category */}
         <input
           type="text"
-          placeholder="Search by venue category"
+          placeholder="Search by venue name or location..."
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+        <input
+          type="text"
+          placeholder="Search by venue category..."
           value={categoryQuery}
           onChange={handleCategorySearch}
         />
       </div>
 
-      {loading ? (
-        <div className="loading">Loading venues...</div>
-      ) : filteredVenues.length > 0 ? (
+      {/* Loading state */}
+      {loading && (
+        <div className="loading">
+          <p>Loading venues...</p>
+        </div>
+      )}
+
+      {/* Error message */}
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+        </div>
+      )}
+
+      {/* Venue List */}
+      {!loading && !error && filteredVenues.length > 0 ? (
         <div className="booking-container">
           {filteredVenues.map((venue) => (
-            <BookingVenu
-            key={venue.id}
-            name={venue.name}
-            image="/Image/360_F_333141947_xz1nD223W2f9EW43iZbjGqCRFC3WAgTy.jpg"
-            location={venue.location}
-            capacity={venue.capacity}
-            type={venue.type}
-            status={venue.status}
-            availableTimeSlots={venue.timeSlots.filter((slot) => slot.isAvailable)}
-            onBook={handleBook}
-          />
-          
+            <BookingVenu key={venue.id} venue={venue} />
           ))}
         </div>
-      ) : (
+      ) : !loading && !error ? (
         <div className="no-results">
           <p>No venues found matching your search criteria.</p>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

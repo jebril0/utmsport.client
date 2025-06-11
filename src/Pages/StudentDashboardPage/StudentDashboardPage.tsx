@@ -1,12 +1,27 @@
-import React from 'react'
-import StudentDashboard from '../../Components/StudentDashboard/StudentDashboard'
+import React, { useEffect, useState } from 'react';
+import StudentDashboard from '../../Components/StudentDashboard/StudentDashboard';
+import { getCurrentUser } from '../../api/usersApi';
+import { useNavigate } from 'react-router-dom';
 
-type Props = {}
+const StudentDashboardPage = () => {
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-const StudentDashboardPage = (props: Props) => {
+  useEffect(() => {
+    getCurrentUser()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(() => {
+        navigate("/login");
+      });
+  }, [navigate]);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
-    <div><StudentDashboard/></div>
-  )
-}
+    <div><StudentDashboard /></div>
+  );
+};
 
-export default StudentDashboardPage
+export default StudentDashboardPage;

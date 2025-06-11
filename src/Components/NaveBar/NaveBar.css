@@ -273,3 +273,37 @@
     animation-delay: 0.2s;
   }
   
+  /* Logout button styling */
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 1rem;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: background-color var(--transition-speed);
+}
+
+.logout-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+@media (min-width: 768px) {
+  .logout-btn {
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+  }
+  .logout-btn:hover {
+    background-color: transparent;
+    text-decoration: underline;
+  }
+}

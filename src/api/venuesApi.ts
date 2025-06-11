@@ -1,5 +1,8 @@
 import axios from "axios";
 
+// Enable cookies for all requests
+axios.defaults.withCredentials = true;
+
 const API_BASE_URL = "http://localhost:5320/api/venues";
 
 // Types that match the backend DTOs
@@ -10,21 +13,22 @@ export interface TimeSlotDTO {
   endTime: string;
   isAvailable: boolean;
 }
+
 export interface VenueForList {
+  id: number;
+  name: string;
+  location: string;
+  capacity: number;
+  type: string;
+  status: boolean;
+  timeSlots: {
     id: number;
-    name: string;
-    location: string;
-    capacity: number;
-    type: string;
-    status: boolean;
-    timeSlots: {
-      id: number;
-      startTime: string;
-      endTime: string;
-      isAvailable: boolean;
-    }[];
-  }
-  
+    startTime: string;
+    endTime: string;
+    isAvailable: boolean;
+  }[];
+}
+
 export interface VenuesDTO {
   name: string;
   location: string;
@@ -46,45 +50,37 @@ export interface VenuesCreateUpdateDTO {
   status: boolean;
 }
 
-// Get all venues with their time slots
-export const getVenues = async () => {
-  const response = await axios.get<VenueWithTimeSlotsResponse[]>(API_BASE_URL);
-  
-  // Transform the data to match the format expected by BookingVenuList
-  return response.data.map((item, index) => ({
-    id: index + 1, // Generate an id since backend doesn't provide one
-    name: item.venue.name,
-    location: item.venue.location,
-    capacity: item.venue.capacity,
-    type: item.venue.type,
-    status: item.venue.status,
-    timeSlots: item.timeSlots.map(ts => ({
-      id: ts.id,
-      startTime: ts.startTime,
-      endTime: ts.endTime,
-      isAvailable: ts.isAvailable
-    }))
-  }));
+export const getAllVenuesWithTimeSlots = async () => {
+  try {
+    const response = await axios.get<VenueWithTimeSlotsResponse[]>(`${API_BASE_URL}`);
+    console.log("Raw venue data from API:", response.data);
+
+    const flattened: VenueForList[] = response.data.map((item, index) => ({
+      id: index + 1, // 👈 Fake ID starts from 1
+      name: item.venue.name,
+      location: item.venue.location,
+      capacity: item.venue.capacity,
+      type: item.venue.type,
+      status: item.venue.status,
+      timeSlots: item.timeSlots.map(slot => ({
+        id: slot.id,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        isAvailable: slot.isAvailable,
+      })),
+    }));
+
+    return flattened;
+  } catch (error) {
+    console.error("Error fetching venues with time slots:", error);
+    throw error;
+  }
 };
 
 // Get a specific venue with its time slots
 export const getVenueWithTimeSlots = async (name: string) => {
   const response = await axios.get<VenueWithTimeSlotsResponse>(`${API_BASE_URL}/${name}/timeslots`);
-  
-  return {
-    id: 1, // Generate an id since backend doesn't provide one
-    name: response.data.venue.name,
-    location: response.data.venue.location,
-    capacity: response.data.venue.capacity,
-    type: response.data.venue.type,
-    status: response.data.venue.status,
-    timeSlots: response.data.timeSlots.map(ts => ({
-      id: ts.id,
-      startTime: ts.startTime,
-      endTime: ts.endTime,
-      isAvailable: ts.isAvailable
-    }))
-  };
+  return response.data;
 };
 
 // Create a new venue
@@ -105,11 +101,11 @@ export const deleteVenue = async (name: string) => {
   return response.data;
 };
 
-// Book a time slot (this would need to be implemented in your backend)
+// Book a time slot
 export const bookTimeSlot = async ({ timeSlotID, userEmail }: { timeSlotID: number; userEmail: string }) => {
   const response = await axios.post("http://localhost:5320/api/bookings", {
     timeSlotID,
-    userEmail
+    userEmail,
   });
   return response.data;
 };

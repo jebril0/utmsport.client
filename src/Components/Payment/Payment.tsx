@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { createBooking } from "../../api/bookingsApi";
 import "./Payment.css";
 
 const Payment: React.FC = () => {
@@ -9,8 +10,8 @@ const Payment: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Extract timeSlotID and userEmail from the state passed via navigation
-  const { timeSlotID, userEmail } = location.state || {};
+  // Extract timeSlotID, userEmail, venueName, startTime, and endTime from the state passed via navigation
+  const { timeSlotID, userEmail, venueName, startTime, endTime } = location.state || {};
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -23,24 +24,42 @@ const Payment: React.FC = () => {
       alert("Please upload a payment screenshot.");
       return;
     }
+    if (!userEmail || !venueName || !startTime || !endTime) {
+      alert("Missing booking information.");
+      return;
+    }
 
     try {
       const formData = new FormData();
-      formData.append("TimeSlotID", timeSlotID.toString());
-      formData.append("UserEmail", userEmail);
-      formData.append("PaymentScreenshot", uploadedFile);
+      formData.append("userEmail", userEmail);
+      formData.append("venueName", venueName);
+      formData.append("startTime", startTime);
+      formData.append("endTime", endTime);
+      formData.append("paymentScreenshot", uploadedFile);
 
-      // Send the booking request with the payment screenshot
-      await fetch("http://localhost:5320/api/bookings/book", {
-        method: "POST",
-        body: formData,
-      });
+      // Debug: log all form data
+      for (let pair of Array.from(formData.entries())) {
+        console.log(pair[0] + ':', pair[1]);
+      }
 
-      alert("Booking successful!");
-      navigate("/"); // Redirect to the homepage or another page after successful booking
-    } catch (error) {
-      console.error("Error submitting payment:", error);
-      alert("Failed to complete the booking.");
+      await createBooking(formData);
+
+      alert("Payment submitted successfully! Your booking is pending confirmation.");
+      navigate("/");
+    } catch (error: any) {
+      // Show more details from the backend
+      if (error.response) {
+        console.error("Server error:", error.response.data);
+        alert(
+          "Booking failed: " +
+          (error.response.data?.message ||
+           JSON.stringify(error.response.data) ||
+           "Unknown server error.")
+        );
+      } else {
+        console.error("Error submitting payment:", error);
+        alert("Failed to complete the booking. See console for details.");
+      }
     }
   };
 

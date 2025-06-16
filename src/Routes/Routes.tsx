@@ -13,6 +13,7 @@ import AdminPage from "../Pages/AdminPage/Admindashboard";
 import ForgotPassword from "../Components/ForgotPassword/ForgotPassword";
 import ForgotPasswordPage from "../Pages/ForgotPasswordPage/ForgotPasswordPage";
 import OtpVerificationPage from "../Pages/OtpVerificationPage/OtpVerificationPage";
+import Admindashboard from "../Pages/AdminPage/Admindashboard";
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +29,7 @@ export const router = createBrowserRouter([
       { path: "venues", element: <BookingVenuList /> }, // Venue list page
       { path: "payment-confirmation", element: <Payment /> },
       {path: "StaffDashboard" , element:<StaffDashboardPage/>},
-      {path: "Admin" , element:<AdminPage/>}
+      {path: "Admin" , element:<Admindashboard/>}
       ,{path: "ForgotPassword" , element:<ForgotPasswordPage/>}
             ,{path: "OtpVerification" , element:<OtpVerificationPage/>}
 

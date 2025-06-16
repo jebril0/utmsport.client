@@ -1,163 +1,171 @@
-"use client";
+"use client"
 
-import type React from "react";
-import type { VenueForList } from "../../api/venuesApi";
-import { useNavigate } from "react-router-dom";
-import {
-  MapPin,
-  Users,
-  Tag,
-  Clock,
-  CheckCircle,
-  XCircle,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
-import { useState, useEffect } from "react";
-import { getCurrentUser } from "../../api/usersApi"; // Import the API function
-import "./BookingVenu.css";
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { MapPin, Users, DollarSign, CheckCircle, XCircle, Clock, Star, Zap, Shield } from "lucide-react"
+import type { VenueForList } from "../../api/venuesApi"
+import { getCurrentUser } from "../../api/usersApi"
 
-interface BookingVenuProps {
-  venue: VenueForList;
+interface BookingVenueProps {
+  venue: VenueForList
+  viewMode?: "grid" | "list"
 }
 
-const BookingVenu: React.FC<BookingVenuProps> = ({ venue }) => {
-  const navigate = useNavigate();
-  const [showTimeSlots, setShowTimeSlots] = useState(false);
-  const [userEmail, setUserEmail] = useState<string>("");
+const BookingVenue: React.FC<BookingVenueProps> = ({ venue, viewMode = "grid" }) => {
+  const navigate = useNavigate()
+  const [userEmail, setUserEmail] = useState<string>("")
+  const [loading, setLoading] = useState(false)
 
-  // Fetch the logged-in user's email using the API
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
-        const data = await getCurrentUser(); // Call the API function
+        const data = await getCurrentUser()
         if (typeof data === "object" && data !== null && "email" in data && typeof (data as any).email === "string") {
-          setUserEmail((data as { email: string }).email); // Assuming the response contains { email, role }
-        } else {
-          console.error("User data does not have an email property:", data);
+          setUserEmail((data as { email: string }).email)
         }
       } catch (error) {
-        console.error("Failed to fetch user email:", error);
+        console.error("Failed to fetch user email:", error)
       }
-    };
-
-    fetchUserEmail();
-  }, []);
-
-  // Navigate to payment screen with selected time slot and user email
-  const handleBookNow = (slot: any) => {
-    if (!userEmail) {
-      alert("User email not found. Please log in.");
-      return;
     }
 
+    fetchUserEmail()
+  }, [])
+
+  const handleBookNow = (slot: any) => {
+    if (!userEmail) {
+      alert("Please log in to book a venue.")
+      return
+    }
+
+    setLoading(true)
     navigate("/payment", {
       state: {
         userEmail,
         venueName: venue.name,
         startTime: slot.startTime,
         endTime: slot.endTime,
+        price: venue.price,
+        venueLocation: venue.location,
+        venueType: venue.type,
+        venueCapacity: venue.capacity,
       },
-    });
-  };
+    })
+  }
 
-  const toggleTimeSlots = () => {
-    setShowTimeSlots((prev) => !prev);
-  };
+  const formatTime = (time: string) => {
+    if (time.includes(":")) {
+      const [hours, minutes] = time.split(":")
+      const hour = Number.parseInt(hours)
+      const ampm = hour >= 12 ? "PM" : "AM"
+      const formattedHour = hour % 12 || 12
+      return `${formattedHour}:${minutes} ${ampm}`
+    }
+    return time
+  }
+
+  const availableSlots = venue.timeSlots.filter((slot) => slot.isAvailable)
+  const isAvailable = venue.status && availableSlots.length > 0
 
   return (
-    <div className="booking-card">
-      <div className="booking-card-header">
-        <div className="booking-card-badge">
-          {venue.status ? (
-            <span className="badge-available">
-              <CheckCircle size={14} /> Available
-            </span>
+    <div className="venue-card">
+      <div className="venue-card-header">
+        <div className="venue-status-badge">
+          {isAvailable ? (
+            <>
+              <CheckCircle className="w-4 h-4" />
+              <span>Available</span>
+            </>
           ) : (
-            <span className="badge-unavailable">
-              <XCircle size={14} /> Unavailable
-            </span>
+            <>
+              <XCircle className="w-4 h-4" />
+              <span>Unavailable</span>
+            </>
           )}
         </div>
-
-        <div className="booking-card-image">
-          <img
-            src="/Image/360_F_333141947_xz1nD223W2f9EW43iZbjGqCRFC3WAgTy.jpg"
-            alt={venue.name}
-          />
+        <div className="venue-rating">
+          <Star className="w-4 h-4 filled" />
+          <span>4.8</span>
         </div>
-
-        <h2 className="booking-card-title">{venue.name}</h2>
       </div>
 
-      <div className="booking-card-body">
-        {/* Venue Details */}
-        <div className="venue-details">
-          <div className="venue-detail-item">
-            <MapPin size={16} className="venue-detail-icon" />
-            <div className="venue-detail-content">
-              <span className="venue-detail-label">Location</span>
-              <span className="venue-detail-value">{venue.location}</span>
-            </div>
-          </div>
+      <div className="venue-card-content">
+        <div className="venue-info">
+          <h3 className="venue-title">{venue.name}</h3>
+          <div className="venue-type-badge">{venue.type}</div>
 
-          <div className="venue-detail-item">
-            <Users size={16} className="venue-detail-icon" />
-            <div className="venue-detail-content">
-              <span className="venue-detail-label">Capacity</span>
-              <span className="venue-detail-value">{venue.capacity} people</span>
+          <div className="venue-details">
+            <div className="detail-row">
+              <MapPin className="detail-icon" />
+              <span className="detail-text">{venue.location}</span>
             </div>
-          </div>
-
-          <div className="venue-detail-item">
-            <Tag size={16} className="venue-detail-icon" />
-            <div className="venue-detail-content">
-              <span className="venue-detail-label">Type</span>
-              <span className="venue-detail-value">{venue.type}</span>
+            <div className="detail-row">
+              <Users className="detail-icon" />
+              <span className="detail-text">{venue.capacity} people</span>
+            </div>
+            <div className="detail-row">
+              <DollarSign className="detail-icon" />
+              <span className="detail-text">RM {venue.price.toFixed(2)}/hour</span>
             </div>
           </div>
         </div>
 
-        <div className="booking-card-divider"></div>
+        {isAvailable ? (
+          <div className="time-slots-section">
+            <div className="slots-header">
+              <Clock className="w-4 h-4" />
+              <span>Available Slots</span>
+              <div className="slots-count">{availableSlots.length}</div>
+            </div>
 
-        {/* Time slots toggle button */}
-        <button
-          className={`time-slots-toggle ${showTimeSlots ? "active" : ""}`}
-          onClick={toggleTimeSlots}
-        >
-          <Clock size={16} />
-          <span>
-            {venue.timeSlots.filter((slot) => slot.isAvailable).length} Available Time Slots
-          </span>
-          {showTimeSlots ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </button>
+            <div className="time-slots-container">
+              {availableSlots.slice(0, 4).map((slot) => (
+                <button key={slot.id} onClick={() => handleBookNow(slot)} className="time-slot-btn" disabled={loading}>
+                  <Zap className="w-3 h-3" />
+                  <span>
+                    {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                  </span>
+                </button>
+              ))}
+            </div>
 
-        {/* Time slots list */}
-        <div className={`time-slots-section ${showTimeSlots ? "show" : ""}`}>
-          <div className="time-slots-container">
-            {venue.timeSlots.length > 0 ? (
-              <ul>
-                {venue.timeSlots.map((slot) => (
-                  <li key={slot.id}>
-                    {slot.startTime} - {slot.endTime} ({slot.isAvailable ? "Available" : "Booked"})
-                    {slot.isAvailable && (
-                      <button onClick={() => handleBookNow(slot)}>
-                        Book
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="no-slots">
-                <p>No available time slots.</p>
+            {availableSlots.length > 4 && (
+              <div className="more-slots-info">
+                <span>+{availableSlots.length - 4} more slots available</span>
               </div>
             )}
           </div>
+        ) : (
+          <div className="unavailable-section">
+            <XCircle className="unavailable-icon" />
+            <div className="unavailable-content">
+              <h4>Currently Unavailable</h4>
+              <p>No time slots available for today</p>
+            </div>
+          </div>
+        )}
+
+        <div className="venue-card-footer">
+          <div className="venue-features">
+            <div className="feature-badge">
+              <Shield className="w-3 h-3" />
+              <span>Premium</span>
+            </div>
+          </div>
+
+          {isAvailable && (
+            <button
+              className="quick-book-btn"
+              onClick={() => availableSlots.length > 0 && handleBookNow(availableSlots[0])}
+              disabled={loading}
+            >
+              <span>Quick Book</span>
+            </button>
+          )}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BookingVenu;
+export default BookingVenue

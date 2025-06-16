@@ -21,6 +21,7 @@ export interface VenueForList {
   capacity: number;
   type: string;
   status: boolean;
+  price: number;
   timeSlots: {
     id: number;
     startTime: string;
@@ -35,6 +36,7 @@ export interface VenuesDTO {
   capacity: number;
   type: string;
   status: boolean;
+  price: number;
 }
 
 export interface VenueWithTimeSlotsResponse {
@@ -48,6 +50,7 @@ export interface VenuesCreateUpdateDTO {
   capacity: number;
   type: string;
   status: boolean;
+  price: number;
 }
 
 export const getAllVenuesWithTimeSlots = async () => {
@@ -62,6 +65,7 @@ export const getAllVenuesWithTimeSlots = async () => {
       capacity: item.venue.capacity,
       type: item.venue.type,
       status: item.venue.status,
+      price: item.venue.price,
       timeSlots: item.timeSlots.map(slot => ({
         id: slot.id,
         startTime: slot.startTime,

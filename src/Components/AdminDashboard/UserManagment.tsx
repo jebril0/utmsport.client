@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { Users, Edit, Trash2, Plus, X, Mail, User, Lock, UserCheck, Search, Filter } from "lucide-react"
+import { Users, Edit, Trash2, Plus, X, Mail, User, Lock, UserCheck, Search, Filter, ChevronUp, ChevronDown } from 'lucide-react'
 import { getAllUsers, updateUser, deleteUser, registerUser_for_admin } from "../../api/usersApi"
 import "./UserManagment.css"
 
@@ -16,10 +16,17 @@ const UserManagement: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState<string>("all")
   const [sortField, setSortField] = useState<string>("name")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
+  const [showForm, setShowForm] = useState<boolean>(false)
+  const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null)
 
   useEffect(() => {
     fetchUsers()
   }, [])
+
+  const showNotification = (type: 'success' | 'error', message: string) => {
+    setNotification({ type, message })
+    setTimeout(() => setNotification(null), 5000)
+  }
 
   const fetchUsers = async () => {
     try {
@@ -28,6 +35,7 @@ const UserManagement: React.FC = () => {
       setUsers(data)
     } catch (error) {
       console.error("Error fetching users:", error)
+      showNotification('error', 'Failed to fetch users')
     } finally {
       setLoading(false)
     }
@@ -42,9 +50,12 @@ const UserManagement: React.FC = () => {
       setSubmitting(true)
       await registerUser_for_admin(form)
       setForm({ email: "", name: "", password: "", rolebase: "student" })
+      setShowForm(false)
       await fetchUsers()
+      showNotification('success', 'User added successfully')
     } catch (error) {
       console.error("Error adding user:", error)
+      showNotification('error', 'Failed to add user')
     } finally {
       setSubmitting(false)
     }
@@ -53,6 +64,7 @@ const UserManagement: React.FC = () => {
   const handleEdit = (user: any) => {
     setEditingEmail(user.email)
     setForm({ email: user.email, name: user.name, password: "", rolebase: user.rolebase })
+    setShowForm(true)
   }
 
   const handleUpdate = async () => {
@@ -62,9 +74,12 @@ const UserManagement: React.FC = () => {
       await updateUser(editingEmail, form)
       setEditingEmail(null)
       setForm({ email: "", name: "", password: "", rolebase: "student" })
+      setShowForm(false)
       await fetchUsers()
+      showNotification('success', 'User updated successfully')
     } catch (error) {
       console.error("Error updating user:", error)
+      showNotification('error', 'Failed to update user')
     } finally {
       setSubmitting(false)
     }
@@ -75,8 +90,10 @@ const UserManagement: React.FC = () => {
       try {
         await deleteUser(email)
         await fetchUsers()
+        showNotification('success', 'User deleted successfully')
       } catch (error) {
         console.error("Error deleting user:", error)
+        showNotification('error', 'Failed to delete user')
       }
     }
   }
@@ -84,6 +101,7 @@ const UserManagement: React.FC = () => {
   const handleCancel = () => {
     setEditingEmail(null)
     setForm({ email: "", name: "", password: "", rolebase: "student" })
+    setShowForm(false)
   }
 
   const handleSort = (field: string) => {
@@ -114,71 +132,89 @@ const UserManagement: React.FC = () => {
       }
     })
 
-  const getRoleBadgeClass = (role: string) => {
-    switch (role.toLowerCase()) {
-      case "admin":
-        return "role-badge role-admin"
-      case "staff":
-        return "role-badge role-staff"
-      case "student":
-        return "role-badge role-student"
-      default:
-        return "role-badge role-default"
-    }
-  }
-
   const getRoleCount = (role: string) => {
     return users.filter((user) => user.rolebase === role).length
   }
 
-  if (loading) {
-    return (
-      <div className="user-management-container">
-        <div className="user-management-content">
-          <div className="loading-skeleton">
-            <div className="skeleton-header"></div>
-            <div className="skeleton-subtitle"></div>
-            <div className="skeleton-stats"></div>
-            <div className="skeleton-table"></div>
-          </div>
-        </div>
+  const LoadingSkeleton = () => (
+    <div className="loading-container">
+      <div className="skeleton-header">
+        <div className="skeleton-title"></div>
+        <div className="skeleton-subtitle"></div>
       </div>
-    )
+      <div className="skeleton-stats">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="skeleton-stat-card">
+            <div className="skeleton-stat-number"></div>
+            <div className="skeleton-stat-label"></div>
+          </div>
+        ))}
+      </div>
+      <div className="skeleton-table">
+        <div className="skeleton-table-header"></div>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="skeleton-table-row"></div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (loading) {
+    return <LoadingSkeleton />
   }
 
   return (
-    <div className="user-management-container">
-      <div className="user-management-content">
+    <div className="user-management">
+      {/* Notification */}
+      {notification && (
+        <div className={`notification ${notification.type}`}>
+          <span>{notification.message}</span>
+          <button onClick={() => setNotification(null)}>×</button>
+        </div>
+      )}
+
+      <div className="user-management-container">
         {/* Header */}
-        <div className="management-header">
+        <div className="header-section">
           <div className="header-content">
-            <Users className="header-icon utm-maroon" />
-            <div>
-              <h1 className="management-title">User Management</h1>
-              <p className="management-subtitle">Manage system users and their roles</p>
+            <div className="header-icon">
+              <Users />
+            </div>
+            <div className="header-text">
+              <h1>User Management</h1>
+              <p>Manage system users and their roles</p>
             </div>
           </div>
+          <button 
+            className="btn btn-primary"
+            onClick={() => setShowForm(true)}
+          >
+            <Plus />
+            Add User
+          </button>
         </div>
 
         {/* User Statistics */}
-        <div className="user-stats">
+        <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-content">
               <div className="stat-info">
                 <span className="stat-label">Total Users</span>
-                <span className="stat-value">{users.length}</span>
+                <span className="stat-number">{users.length}</span>
               </div>
-              <Users className="stat-icon utm-maroon" />
+              <div className="stat-icon">
+                <Users />
+              </div>
             </div>
           </div>
           <div className="stat-card">
             <div className="stat-content">
               <div className="stat-info">
                 <span className="stat-label">Students</span>
-                <span className="stat-value">{getRoleCount("student")}</span>
+                <span className="stat-number">{getRoleCount("student")}</span>
               </div>
-              <div className="stat-icon-container student-bg">
-                <User className="stat-icon student-color" />
+              <div className="stat-icon">
+                <User />
               </div>
             </div>
           </div>
@@ -186,10 +222,10 @@ const UserManagement: React.FC = () => {
             <div className="stat-content">
               <div className="stat-info">
                 <span className="stat-label">Staff</span>
-                <span className="stat-value">{getRoleCount("staff")}</span>
+                <span className="stat-number">{getRoleCount("staff")}</span>
               </div>
-              <div className="stat-icon-container staff-bg">
-                <UserCheck className="stat-icon staff-color" />
+              <div className="stat-icon">
+                <UserCheck />
               </div>
             </div>
           </div>
@@ -197,38 +233,38 @@ const UserManagement: React.FC = () => {
             <div className="stat-content">
               <div className="stat-info">
                 <span className="stat-label">Admins</span>
-                <span className="stat-value">{getRoleCount("admin")}</span>
+                <span className="stat-number">{getRoleCount("admin")}</span>
               </div>
-              <div className="stat-icon-container admin-bg">
-                <Users className="stat-icon admin-color" />
+              <div className="stat-icon">
+                <Users />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="management-sections">
+        <div className="content-grid">
           {/* Users Table Section */}
           <div className="table-section">
             <div className="section-card">
               <div className="section-header">
-                <h3 className="section-title">Users List</h3>
-                <div className="table-controls">
+                <h3>Users List</h3>
+                <div className="filters-container">
                   <div className="search-container">
                     <Search className="search-icon" />
                     <input
                       type="text"
+                      className="search-input"
                       placeholder="Search users..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="search-input"
                     />
                   </div>
                   <div className="filter-container">
                     <Filter className="filter-icon" />
                     <select
+                      className="filter-select"
                       value={roleFilter}
                       onChange={(e) => setRoleFilter(e.target.value)}
-                      className="filter-select"
                     >
                       <option value="all">All Roles</option>
                       <option value="student">Students</option>
@@ -244,34 +280,31 @@ const UserManagement: React.FC = () => {
                   <table className="users-table">
                     <thead>
                       <tr>
-                        <th
-                          className={`sortable ${sortField === "email" ? `sorted-${sortDirection}` : ""}`}
-                          onClick={() => handleSort("email")}
-                        >
+                        <th onClick={() => handleSort("email")} className="sortable">
                           <div className="th-content">
-                            <Mail className="th-icon" />
+                            <Mail />
                             <span>Email</span>
-                            <div className="sort-indicator"></div>
+                            {sortField === "email" && (
+                              sortDirection === "asc" ? <ChevronUp /> : <ChevronDown />
+                            )}
                           </div>
                         </th>
-                        <th
-                          className={`sortable ${sortField === "name" ? `sorted-${sortDirection}` : ""}`}
-                          onClick={() => handleSort("name")}
-                        >
+                        <th onClick={() => handleSort("name")} className="sortable">
                           <div className="th-content">
-                            <User className="th-icon" />
+                            <User />
                             <span>Name</span>
-                            <div className="sort-indicator"></div>
+                            {sortField === "name" && (
+                              sortDirection === "asc" ? <ChevronUp /> : <ChevronDown />
+                            )}
                           </div>
                         </th>
-                        <th
-                          className={`sortable ${sortField === "rolebase" ? `sorted-${sortDirection}` : ""}`}
-                          onClick={() => handleSort("rolebase")}
-                        >
+                        <th onClick={() => handleSort("rolebase")} className="sortable">
                           <div className="th-content">
-                            <UserCheck className="th-icon" />
+                            <UserCheck />
                             <span>Role</span>
-                            <div className="sort-indicator"></div>
+                            {sortField === "rolebase" && (
+                              sortDirection === "asc" ? <ChevronUp /> : <ChevronDown />
+                            )}
                           </div>
                         </th>
                         <th>Actions</th>
@@ -279,29 +312,29 @@ const UserManagement: React.FC = () => {
                     </thead>
                     <tbody>
                       {filteredAndSortedUsers.map((user) => (
-                        <tr key={user.email} className="table-row">
+                        <tr key={user.email}>
                           <td className="email-cell">{user.email}</td>
                           <td className="name-cell">{user.name}</td>
-                          <td className="role-cell">
-                            <span className={getRoleBadgeClass(user.rolebase)}>
+                          <td>
+                            <span className={`role-badge role-${user.rolebase}`}>
                               {user.rolebase.charAt(0).toUpperCase() + user.rolebase.slice(1)}
                             </span>
                           </td>
-                          <td className="actions-cell">
-                            <div className="action-buttons">
+                          <td>
+                            <div className="actions-container">
                               <button
+                                className="btn-icon btn-edit"
                                 onClick={() => handleEdit(user)}
-                                className="action-button edit-button"
                                 title="Edit user"
                               >
-                                <Edit className="action-icon" />
+                                <Edit />
                               </button>
                               <button
+                                className="btn-icon btn-delete"
                                 onClick={() => handleDelete(user.email)}
-                                className="action-button delete-button"
                                 title="Delete user"
                               >
-                                <Trash2 className="action-icon" />
+                                <Trash2 />
                               </button>
                             </div>
                           </td>
@@ -311,9 +344,11 @@ const UserManagement: React.FC = () => {
                   </table>
                 ) : (
                   <div className="empty-state">
-                    <Users className="empty-icon" />
-                    <h3 className="empty-title">No users found</h3>
-                    <p className="empty-description">
+                    <div className="empty-icon">
+                      <Users />
+                    </div>
+                    <h3>No users found</h3>
+                    <p>
                       {searchTerm || roleFilter !== "all"
                         ? "Try adjusting your search or filter criteria."
                         : "Start by adding your first user."}
@@ -323,119 +358,132 @@ const UserManagement: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* User Form Section */}
-          <div className="form-section">
-            <div className="section-card">
-              <div className="section-header">
-                <h3 className="section-title">{editingEmail ? "Edit User" : "Add New User"}</h3>
-                {editingEmail && (
-                  <button onClick={handleCancel} className="cancel-button">
-                    <X className="cancel-icon" />
-                  </button>
-                )}
-              </div>
-
-              <form className="user-form" onSubmit={(e) => e.preventDefault()}>
-                <div className="form-group">
-                  <label className="form-label">
-                    <Mail className="label-icon" />
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter email address"
-                    value={form.email}
-                    onChange={handleChange}
-                    disabled={!!editingEmail}
-                    className="form-input"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">
-                    <User className="label-icon" />
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Enter full name"
-                    value={form.name}
-                    onChange={handleChange}
-                    className="form-input"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">
-                    <Lock className="label-icon" />
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder={editingEmail ? "Leave blank to keep current password" : "Enter password"}
-                    value={form.password}
-                    onChange={handleChange}
-                    className="form-input"
-                    required={!editingEmail}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">
-                    <UserCheck className="label-icon" />
-                    Role
-                  </label>
-                  <select
-                    name="rolebase"
-                    value={form.rolebase}
-                    onChange={handleChange}
-                    className="form-select"
-                    required
-                  >
-                    <option value="student">Student</option>
-                    <option value="staff">Staff</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
-
-                <div className="form-actions">
-                  {editingEmail ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={handleUpdate}
-                        disabled={submitting}
-                        className="form-button primary-button"
-                      >
-                        {submitting ? "Updating..." : "Update User"}
-                      </button>
-                      <button type="button" onClick={handleCancel} className="form-button secondary-button">
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleAdd}
-                      disabled={submitting}
-                      className="form-button primary-button"
-                    >
-                      <Plus className="button-icon" />
-                      {submitting ? "Adding..." : "Add User"}
-                    </button>
-                  )}
-                </div>
-              </form>
-            </div>
-          </div>
         </div>
       </div>
+
+      {/* User Form Modal */}
+      {showForm && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h3>{editingEmail ? "Edit User" : "Add New User"}</h3>
+              <button className="close-btn" onClick={handleCancel}>
+                <X />
+              </button>
+            </div>
+
+            <form onSubmit={(e) => e.preventDefault()} className="user-form">
+              <div className="form-group">
+                <label className="form-label">
+                  <Mail />
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  className="form-input"
+                  placeholder="Enter email address"
+                  value={form.email}
+                  onChange={handleChange}
+                  disabled={!!editingEmail}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">
+                  <User />
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  className="form-input"
+                  placeholder="Enter full name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">
+                  <Lock />
+                  Password
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  className="form-input"
+                  placeholder={editingEmail ? "Leave blank to keep current password" : "Enter password"}
+                  value={form.password}
+                  onChange={handleChange}
+                  required={!editingEmail}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">
+                  <UserCheck />
+                  Role
+                </label>
+                <select
+                  name="rolebase"
+                  className="form-select"
+                  value={form.rolebase}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="student">Student</option>
+                  <option value="staff">Staff</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              <div className="form-actions">
+                {editingEmail ? (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleUpdate}
+                      disabled={submitting}
+                    >
+                      {submitting ? "Updating..." : "Update User"}
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn btn-secondary"
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleAdd}
+                      disabled={submitting}
+                    >
+                      <Plus />
+                      {submitting ? "Adding..." : "Add User"}
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn btn-secondary"
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

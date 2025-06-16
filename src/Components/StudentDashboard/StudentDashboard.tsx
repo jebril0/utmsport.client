@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import { Calendar, MapPin, User, Mail, UserCircle, Plus, X, CheckCircle, AlertCircle } from "lucide-react"
 import { getCurrentUser } from "../../api/usersApi"
 import { getBookingsByEmail, cancelBooking } from "../../api/bookingsApi"
 import { getAllVenuesWithTimeSlots } from "../../api/venuesApi"
@@ -14,6 +15,9 @@ const StudentDashboard: React.FC = () => {
   const [upcomingBookings, setUpcomingBookings] = useState<any[]>([])
   const [availableVenues, setAvailableVenues] = useState<any[]>([])
   const [activeTab, setActiveTab] = useState("pending")
+  const [loading, setLoading] = useState(true)
+  const [currentVenuePage, setCurrentVenuePage] = useState(1)
+  const venuesPerPage = 3
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -29,7 +33,6 @@ const StudentDashboard: React.FC = () => {
         console.error("Failed to fetch user details:", error)
       }
     }
-
     fetchUserDetails()
   }, [])
 
@@ -46,7 +49,6 @@ const StudentDashboard: React.FC = () => {
         console.error("Failed to fetch bookings:", error)
       }
     }
-
     if (userEmail) {
       fetchBookings()
     }
@@ -55,6 +57,7 @@ const StudentDashboard: React.FC = () => {
   useEffect(() => {
     const fetchVenues = async () => {
       try {
+        setLoading(true)
         const data = await getAllVenuesWithTimeSlots()
         const available = data.map((venue: any) => ({
           name: venue.name,
@@ -64,9 +67,10 @@ const StudentDashboard: React.FC = () => {
         setAvailableVenues(available)
       } catch (error) {
         console.error("Failed to fetch venues:", error)
+      } finally {
+        setLoading(false)
       }
     }
-
     fetchVenues()
   }, [])
 
@@ -76,7 +80,6 @@ const StudentDashboard: React.FC = () => {
       alert("Failed to retrieve TimeSlot details. Cannot cancel booking.")
       return
     }
-
     try {
       await cancelBooking(booking.userEmail, timeSlot.venueName, timeSlot.startTime, timeSlot.endTime)
       alert("Booking canceled successfully.")
@@ -87,375 +90,270 @@ const StudentDashboard: React.FC = () => {
     }
   }
 
-  // Filter bookings based on status
   const pendingBookings = upcomingBookings.filter((booking) => !booking.isConfirmed)
   const completedBookings = upcomingBookings.filter((booking) => booking.isConfirmed)
   const totalAvailableSlots = availableVenues.reduce((sum, venue) => sum + venue.available, 0)
 
-  const getStatusBadge = (status: boolean) => {
-    return status ? (
-      <span className="badge badge-success">Approved</span>
-    ) : (
-      <span className="badge badge-warning">Pending</span>
+  const getStatusBadge = (status: boolean) => (status ? "Approved" : "Pending")
+
+  if (loading) {
+    return (
+      <div className="student-dashboard">
+        <div className="dashboard-container">
+          <div className="loading-skeleton">
+            <div className="skeleton-welcome"></div>
+            <div className="skeleton-content"></div>
+          </div>
+        </div>
+      </div>
     )
   }
 
   return (
-    <div className="dashboard-container">
-      {/* Header Section */}
-      <div className="dashboard-header">
-        <div className="header-content">
-          <div>
-            <h1 className="dashboard-title">Welcome back, {userName}</h1>
-            <p className="dashboard-subtitle">
+    <div className="student-dashboard">
+      <div className="dashboard-container">
+        {/* Welcome Section */}
+        <div className="welcome-section">
+          <div className="welcome-content">
+            <h2 className="welcome-title">Welcome back, {userName}</h2>
+            <p className="welcome-date">
               {new Date().toLocaleDateString("en-US", {
                 weekday: "long",
+                year: "numeric",
                 month: "long",
                 day: "numeric",
-                year: "numeric",
               })}
             </p>
-          </div>
-          <div className="header-actions">
-            <Link to="/booking" className="btn btn-primary">
+            <Link to="/booking" className="book-new-link">
+              <Plus className="w-4 h-4" />
               Book New Facility
             </Link>
           </div>
         </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-content">
-            <div className="stat-icon-wrapper stat-icon-pending">
-              <svg className="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <div className="stat-details">
-              <dt className="stat-label">Active Bookings</dt>
-              <dd className="stat-value">{pendingBookings.length}</dd>
-            </div>
-          </div>
-          <div className="stat-footer">
-            <button className="stat-link" onClick={() => setActiveTab("pending")}>
-              View pending bookings
-            </button>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-content">
-            <div className="stat-icon-wrapper stat-icon-completed">
-              <svg className="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <div className="stat-details">
-              <dt className="stat-label">Completed Bookings</dt>
-              <dd className="stat-value">{completedBookings.length}</dd>
-            </div>
-          </div>
-          <div className="stat-footer">
-            <button className="stat-link" onClick={() => setActiveTab("completed")}>
-              View completed bookings
-            </button>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-content">
-            <div className="stat-icon-wrapper stat-icon-available">
-              <svg className="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
-            </div>
-            <div className="stat-details">
-              <dt className="stat-label">Available Slots</dt>
-              <dd className="stat-value">{totalAvailableSlots}</dd>
-            </div>
-          </div>
-          <div className="stat-footer">
-            <Link to="/booking" className="stat-link">
-              Book now
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Bookings Section */}
-      <div className="bookings-section">
-        <div className="section-header">
-          <div className="tab-navigation">
-            <button
-              className={`tab-button ${activeTab === "pending" ? "tab-active" : ""}`}
-              onClick={() => setActiveTab("pending")}
-            >
-              Active Bookings ({pendingBookings.length})
-            </button>
-            <button
-              className={`tab-button ${activeTab === "completed" ? "tab-active" : ""}`}
-              onClick={() => setActiveTab("completed")}
-            >
-              Completed Bookings ({completedBookings.length})
-            </button>
-          </div>
-        </div>
-
-        <div className="bookings-content">
-          {activeTab === "pending" ? (
-            <div className="bookings-table-container">
-              {pendingBookings.length > 0 ? (
-                <table className="bookings-table">
-                  <thead>
-                    <tr>
-                      <th>Facility</th>
-                      <th>Date & Time</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pendingBookings.map((booking) => (
-                      <tr key={booking.id}>
-                        <td>
-                          <div className="facility-info">
-                            <div className="facility-icon">
-                              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                />
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                              </svg>
-                            </div>
-                            <div className="facility-name">{booking.timeSlot.venueName}</div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="booking-time">
-                            <div className="booking-date">
-                              {new Date().toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              })}
-                            </div>
-                            <div className="booking-slot">
-                              {booking.timeSlot.startTime} - {booking.timeSlot.endTime}
-                            </div>
-                          </div>
-                        </td>
-                        <td>{getStatusBadge(booking.isConfirmed)}</td>
-                        <td>
-                          <button className="btn btn-danger btn-sm" onClick={() => handleCancelBooking(booking)}>
-                            Cancel
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="empty-state">
-                  <div className="empty-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <h3>No active bookings</h3>
-                  <p>You don't have any pending bookings at the moment.</p>
-                  <Link to="/booking" className="btn btn-primary">
-                    Book a Facility
-                  </Link>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="bookings-table-container">
-              {completedBookings.length > 0 ? (
-                <table className="bookings-table">
-                  <thead>
-                    <tr>
-                      <th>Facility</th>
-                      <th>Date & Time</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {completedBookings.map((booking) => (
-                      <tr key={booking.id}>
-                        <td>
-                          <div className="facility-info">
-                            <div className="facility-icon">
-                              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                />
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                              </svg>
-                            </div>
-                            <div className="facility-name">{booking.timeSlot.venueName}</div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="booking-time">
-                            <div className="booking-date">
-                              {new Date().toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              })}
-                            </div>
-                            <div className="booking-slot">
-                              {booking.timeSlot.startTime} - {booking.timeSlot.endTime}
-                            </div>
-                          </div>
-                        </td>
-                        <td>{getStatusBadge(booking.isConfirmed)}</td>
-                        <td>
-                          <button className="btn btn-outline btn-sm">View Details</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="empty-state">
-                  <div className="empty-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <h3>No completed bookings</h3>
-                  <p>You don't have any completed bookings yet.</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Available Venues Section */}
-      <div className="venues-section">
-        <div className="section-header">
-          <h2 className="section-title">Available Venues</h2>
-          <Link to="/venues" className="btn btn-outline">
-            View All Venues
-          </Link>
-        </div>
-
-        <div className="venues-grid">
-          {availableVenues.map((venue, index) => (
-            <div key={index} className="venue-card">
-              <div className="venue-header">
-                <div className="venue-icon">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                </div>
-                <h3 className="venue-name">{venue.name}</h3>
+        <div className="dashboard-grid">
+          {/* Bookings Section */}
+          <div className="bookings-section">
+            <div className="section-header">
+              <h3 className="section-title">My Bookings</h3>
+              <div className="booking-tabs">
+                <button
+                  onClick={() => setActiveTab("pending")}
+                  className={`tab-button ${activeTab === "pending" ? "active" : ""}`}
+                >
+                  <AlertCircle className="w-4 h-4" />
+                  Active Bookings
+                  <span className="tab-badge">{pendingBookings.length}</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("completed")}
+                  className={`tab-button ${activeTab === "completed" ? "active" : ""}`}
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Completed Bookings
+                  <span className="tab-badge">{completedBookings.length}</span>
+                </button>
               </div>
-              <div className="venue-availability">
-                <div className="availability-bar">
-                  <div
-                    className="availability-fill"
-                    style={{ width: `${(venue.available / venue.total) * 100}%` }}
-                  ></div>
-                </div>
-                <div className="availability-text">
-                  {venue.available === 0 ? (
-                    <span className="fully-booked">Fully Booked</span>
+            </div>
+
+            <div className="bookings-content">
+              {activeTab === "pending" ? (
+                <div>
+                  {pendingBookings.length > 0 ? (
+                    <table className="bookings-table">
+                      <thead>
+                        <tr>
+                          <th>Facility</th>
+                          <th>Date & Time</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pendingBookings.map((booking) => (
+                          <tr key={booking.id}>
+                            <td data-label="Facility">
+                              <div className="facility-name">{booking.timeSlot.venueName}</div>
+                            </td>
+                            <td data-label="Date & Time">
+                              <div className="booking-time">
+                                {booking.timeSlot.startTime} - {booking.timeSlot.endTime}
+                              </div>
+                            </td>
+                            <td data-label="Status">
+                              <span className={`status-badge status-${booking.isConfirmed ? "approved" : "pending"}`}>
+                                {getStatusBadge(booking.isConfirmed)}
+                              </span>
+                            </td>
+                            <td data-label="Actions">
+                              <button
+                                onClick={() => handleCancelBooking(booking)}
+                                className="action-button cancel-button"
+                              >
+                                <X className="w-4 h-4" />
+                                Cancel
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   ) : (
-                    <span className="available-slots">{venue.available} Available</span>
+                    <div className="empty-state">
+                      <Calendar className="empty-state-icon" />
+                      <h4 className="empty-state-title">No active bookings</h4>
+                      <p className="empty-state-description">You don't have any pending bookings at the moment.</p>
+                    </div>
                   )}
                 </div>
-                <div className="availability-ratio">
-                  {venue.available}/{venue.total} slots available
+              ) : (
+                <div>
+                  {completedBookings.length > 0 ? (
+                    <table className="bookings-table">
+                      <thead>
+                        <tr>
+                          <th>Facility</th>
+                          <th>Date & Time</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {completedBookings.map((booking) => (
+                          <tr key={booking.id}>
+                            <td data-label="Facility">
+                              <div className="facility-name">{booking.timeSlot.venueName}</div>
+                            </td>
+                            <td data-label="Date & Time">
+                              <div className="booking-time">
+                                {booking.timeSlot.startTime} - {booking.timeSlot.endTime}
+                              </div>
+                            </td>
+                            <td data-label="Status">
+                              <span className={`status-badge status-${booking.isConfirmed ? "approved" : "pending"}`}>
+                                {getStatusBadge(booking.isConfirmed)}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="empty-state">
+                      <CheckCircle className="empty-state-icon" />
+                      <h4 className="empty-state-title">No completed bookings</h4>
+                      <p className="empty-state-description">Your completed bookings will appear here.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="sidebar-sections">
+            {/* Available Venues Section */}
+            <div className="venues-section">
+              <div className="section-header">
+                <h3 className="section-title">Available Venues</h3>
+                {availableVenues.length > venuesPerPage && (
+                  <div className="venue-pagination-info">
+                    Page {currentVenuePage} of {Math.ceil(availableVenues.length / venuesPerPage)}
+                  </div>
+                )}
+              </div>
+              <div className="venues-content">
+                <div className="venues-list">
+                  {availableVenues
+                    .slice((currentVenuePage - 1) * venuesPerPage, currentVenuePage * venuesPerPage)
+                    .map((venue, idx) => (
+                      <div key={idx} className="venue-item">
+                        <div className="venue-info">
+                          <div className="venue-name">{venue.name}</div>
+                          <div className={`venue-availability ${venue.available === 0 ? "no-slots" : ""}`}>
+                            <MapPin className="w-4 h-4 inline mr-1" />
+                            {venue.available}/{venue.total} slots available
+                          </div>
+                        </div>
+                        <Link
+                          to={`/booking?venue=${encodeURIComponent(venue.name)}`}
+                          className={`book-venue-link ${venue.available === 0 ? "disabled" : ""}`}
+                        >
+                          <Calendar className="w-4 h-4" />
+                          Book Now
+                        </Link>
+                      </div>
+                    ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {availableVenues.length > venuesPerPage && (
+                  <div className="venue-pagination">
+                    <button
+                      onClick={() => setCurrentVenuePage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentVenuePage === 1}
+                      className="pagination-button"
+                    >
+                      Previous
+                    </button>
+
+                    <div className="pagination-numbers">
+                      {Array.from({ length: Math.ceil(availableVenues.length / venuesPerPage) }, (_, i) => (
+                        <button
+                          key={i + 1}
+                          onClick={() => setCurrentVenuePage(i + 1)}
+                          className={`pagination-number ${currentVenuePage === i + 1 ? "active" : ""}`}
+                        >
+                          {i + 1}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        setCurrentVenuePage((prev) =>
+                          Math.min(prev + 1, Math.ceil(availableVenues.length / venuesPerPage)),
+                        )
+                      }
+                      disabled={currentVenuePage === Math.ceil(availableVenues.length / venuesPerPage)}
+                      className="pagination-button"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Profile Section */}
+            <div className="profile-section">
+              <div className="section-header">
+                <h3 className="section-title">Your Profile</h3>
+              </div>
+              <div className="profile-content">
+                <div className="profile-info">
+                  <div className="profile-item">
+                    <User className="profile-icon" />
+                    <div className="profile-details">
+                      <div className="profile-label">Name</div>
+                      <div className="profile-value">{userName}</div>
+                    </div>
+                  </div>
+                  <div className="profile-item">
+                    <Mail className="profile-icon" />
+                    <div className="profile-details">
+                      <div className="profile-label">Email</div>
+                      <div className="profile-value">{userEmail}</div>
+                    </div>
+                  </div>
+                  <div className="profile-item">
+                    <UserCircle className="profile-icon" />
+                    <div className="profile-details">
+                      <div className="profile-label">Role</div>
+                      <div className="profile-value">Student</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="venue-actions">
-                <Link
-                  to={`/booking?venue=${encodeURIComponent(venue.name)}`}
-                  className="btn btn-primary btn-sm"
-                  style={{
-                    opacity: venue.available === 0 ? 0.5 : 1,
-                    pointerEvents: venue.available === 0 ? "none" : "auto",
-                  }}
-                >
-                  Book Now
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Profile Section */}
-      <div className="profile-section">
-        <div className="section-header">
-          <h2 className="section-title">Your Profile</h2>
-          <Link to="/profile" className="btn btn-outline">
-            Edit Profile
-          </Link>
-        </div>
-
-        <div className="profile-card">
-          <div className="profile-content">
-            <div className="profile-avatar">
-              <div className="avatar-placeholder">{userName.charAt(0).toUpperCase()}</div>
-            </div>
-            <div className="profile-info">
-              <h3 className="profile-name">{userName}</h3>
-              <p className="profile-email">{userEmail}</p>
-              <p className="profile-role">Student</p>
             </div>
           </div>
         </div>

@@ -1,1093 +1,753 @@
-/* UTM Student Dashboard Styles - Enhanced Eye Comfort & Professional Design */
+/* UTM Student Dashboard Styles */
+
+/* CSS Variables for UTM Colors and Theme */
+:root {
+  --utm-maroon: #8b1538;
+  --utm-maroon-dark: #800000;
+  --utm-maroon-light: rgba(139, 21, 56, 0.1);
+  --utm-maroon-gradient: linear-gradient(135deg, #8b1538 0%, #800000 100%);
+  --success-color: #16a34a;
+  --success-light: #dcfce7;
+  --success-dark: #15803d;
+  --warning-color: #d97706;
+  --warning-light: #fef3c7;
+  --warning-dark: #b45309;
+  --pending-color: #3b82f6;
+  --pending-light: #dbeafe;
+  --pending-dark: #1d4ed8;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  line-height: 1.6;
+  color: var(--gray-900);
+  background-color: var(--gray-50);
+}
+
+/* Student Dashboard Container */
+.student-dashboard {
+  min-height: 100vh;
+  background-color: var(--gray-50);
+  padding: 2rem;
+}
 
 .dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 24px;
-  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  display: grid;
+  gap: 2rem;
 }
 
-/* Header Section */
-.dashboard-header {
-  background: linear-gradient(135deg, #8b1538 0%, #6d1028 50%, #5a0d20 100%);
-  border-radius: 16px;
-  padding: 40px;
-  margin-bottom: 40px;
-  color: white;
-  box-shadow: 0 8px 32px rgba(139, 21, 56, 0.15);
+/* Welcome Section */
+.welcome-section {
+  background: var(--utm-maroon-gradient);
+  color: var(--white);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
 }
 
-.dashboard-header::before {
+.welcome-section::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-  pointer-events: none;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(50%, -50%);
 }
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+.welcome-content {
   position: relative;
   z-index: 1;
 }
 
-.dashboard-title {
-  font-size: 2.25rem;
-  font-weight: 600;
-  margin: 0 0 8px 0;
-  color: white;
-  letter-spacing: -0.025em;
+.welcome-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
   line-height: 1.2;
 }
 
-.dashboard-subtitle {
-  font-size: 1.1rem;
-  margin: 0;
+.welcome-date {
+  font-size: 1rem;
   opacity: 0.9;
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  margin-bottom: 1.5rem;
 }
 
-.header-actions {
-  display: flex;
-  gap: 16px;
-}
-
-/* Stats Grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 28px;
-  margin-bottom: 40px;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-.stat-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #8b1538, #a91d42);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(139, 21, 56, 0.12);
-}
-
-.stat-card:hover::before {
-  opacity: 1;
-}
-
-.stat-content {
-  padding: 28px;
-  display: flex;
+.book-new-link {
+  display: inline-flex;
   align-items: center;
-  gap: 20px;
-}
-
-.stat-icon-wrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.stat-icon-pending {
-  background: linear-gradient(135deg, rgba(139, 21, 56, 0.1), rgba(139, 21, 56, 0.05));
-  color: #8b1538;
-}
-
-.stat-icon-completed {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-  color: #10b981;
-}
-
-.stat-icon-available {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
-  color: #3b82f6;
-}
-
-.stat-icon {
-  width: 28px;
-  height: 28px;
-}
-
-.stat-details {
-  flex: 1;
-  min-width: 0;
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  color: #64748b;
-  margin: 0 0 6px 0;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-}
-
-.stat-value {
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0;
-  letter-spacing: -0.025em;
-}
-
-.stat-footer {
-  padding: 20px 28px;
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  border-top: 1px solid rgba(0, 0, 0, 0.04);
-}
-
-.stat-link {
-  color: #8b1538;
-  font-size: 0.9rem;
-  font-weight: 500;
+  gap: 0.5rem;
+  background-color: var(--white);
+  color: var(--utm-maroon);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
   text-decoration: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  letter-spacing: 0.01em;
-}
-
-.stat-link:hover {
-  color: #6d1028;
-  text-decoration: underline;
-}
-
-/* Section Headers */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28px;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.section-title {
-  font-size: 1.75rem;
   font-weight: 600;
-  color: #1e293b;
-  margin: 0;
-  letter-spacing: -0.025em;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: var(--shadow-md);
+}
+
+.book-new-link:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background-color: var(--gray-50);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 2fr 1fr;
+  }
 }
 
 /* Bookings Section */
 .bookings-section {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  margin-bottom: 40px;
+  background-color: var(--white);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
-.tab-navigation {
+.section-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--gray-200);
+  background-color: var(--gray-50);
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 0 28px;
-  background: linear-gradient(135deg, #fafbfc, #f8fafc);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+/* Booking Tabs */
+.booking-tabs {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
 }
 
 .tab-button {
-  padding: 20px 28px;
-  background: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
   border: none;
-  font-size: 0.95rem;
+  background-color: transparent;
+  color: var(--gray-600);
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #64748b;
+  border-radius: 0.5rem;
   cursor: pointer;
-  border-bottom: 3px solid transparent;
-  transition: all 0.3s ease;
-  letter-spacing: 0.01em;
-  position: relative;
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
 }
 
 .tab-button:hover {
-  color: #8b1538;
-  background: rgba(139, 21, 56, 0.02);
+  background-color: var(--gray-100);
+  color: var(--gray-900);
 }
 
-.tab-active {
-  color: #8b1538 !important;
-  border-bottom-color: #8b1538;
-  background: rgba(139, 21, 56, 0.03);
+.tab-button.active {
+  background-color: var(--utm-maroon);
+  color: var(--white);
 }
 
+.tab-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: inherit;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tab-button:not(.active) .tab-badge {
+  background-color: var(--gray-200);
+  color: var(--gray-600);
+}
+
+/* Bookings Table */
 .bookings-content {
-  padding: 32px;
-}
-
-/* Table Styles */
-.bookings-table-container {
-  overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 2rem;
 }
 
 .bookings-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  margin: 0;
 }
 
 .bookings-table th {
+  background-color: var(--gray-50);
+  padding: 1rem 1.5rem;
   text-align: left;
-  padding: 16px 20px;
-  font-size: 0.9rem;
   font-weight: 600;
-  color: #475569;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  letter-spacing: 0.01em;
+  color: var(--gray-700);
+  border-bottom: 1px solid var(--gray-200);
+  font-size: 0.875rem;
 }
 
 .bookings-table td {
-  padding: 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
   vertical-align: middle;
 }
 
 .bookings-table tr:hover {
-  background: linear-gradient(135deg, #fafbfc, #f8fafc);
-}
-
-.bookings-table tr:last-child td {
-  border-bottom: none;
-}
-
-.facility-info {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.facility-icon {
-  width: 44px;
-  height: 44px;
-  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #8b1538;
-  flex-shrink: 0;
-}
-
-.facility-icon svg {
-  width: 22px;
-  height: 22px;
+  background-color: var(--gray-50);
 }
 
 .facility-name {
-  font-weight: 600;
-  color: #1e293b;
-  font-size: 1rem;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  color: var(--gray-900);
 }
 
 .booking-time {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  color: var(--gray-600);
+  font-size: 0.875rem;
 }
 
-.booking-date {
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-pending {
+  background-color: var(--pending-light);
+  color: var(--pending-dark);
+}
+
+.status-approved {
+  background-color: var(--success-light);
+  color: var(--success-dark);
+}
+
+/* Action Buttons */
+.action-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #1e293b;
-  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-.booking-slot {
-  font-size: 0.85rem;
-  color: #64748b;
-  font-weight: 400;
+.cancel-button {
+  background-color: var(--warning-light);
+  color: var(--warning-dark);
+}
+
+.cancel-button:hover {
+  background-color: var(--warning-color);
+  color: var(--white);
+}
+
+.view-button {
+  background-color: var(--utm-maroon-light);
+  color: var(--utm-maroon);
+}
+
+.view-button:hover {
+  background-color: var(--utm-maroon);
+  color: var(--white);
 }
 
 /* Empty State */
 .empty-state {
   text-align: center;
-  padding: 60px 32px;
+  padding: 3rem 2rem;
+  color: var(--gray-500);
 }
 
-.empty-icon {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 20px;
-  color: #cbd5e1;
+.empty-state-icon {
+  width: 4rem;
+  height: 4rem;
+  color: var(--gray-300);
+  margin: 0 auto 1rem;
 }
 
-.empty-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.empty-state h3 {
-  font-size: 1.25rem;
+.empty-state-title {
+  font-size: 1.125rem;
   font-weight: 600;
-  color: #475569;
-  margin: 0 0 12px 0;
-  letter-spacing: -0.025em;
+  color: var(--gray-700);
+  margin-bottom: 0.5rem;
 }
 
-.empty-state p {
-  color: #64748b;
-  margin: 0 0 28px 0;
-  font-size: 1rem;
-  line-height: 1.5;
+.empty-state-description {
+  font-size: 0.875rem;
+  color: var(--gray-500);
 }
 
-/* Venues Section */
+/* Sidebar Sections */
+.sidebar-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Available Venues Section */
 .venues-section {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  padding: 32px;
-  margin-bottom: 40px;
-}
-
-.venues-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 28px;
-}
-
-.venue-card {
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 12px;
-  padding: 24px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(135deg, #fafbfc, #f8fafc);
-  position: relative;
+  background-color: var(--white);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
-.venue-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #8b1538, #a91d42);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+.venues-content {
+  padding: 2rem;
 }
 
-.venue-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(139, 21, 56, 0.1);
-  border-color: rgba(139, 21, 56, 0.1);
+.venues-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 0;
 }
 
-.venue-card:hover::before {
-  transform: scaleX(1);
-}
-
-.venue-header {
+.venue-item {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  padding: 1.25rem;
+  background-color: var(--gray-50);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid var(--gray-100);
 }
 
-.venue-icon {
-  width: 36px;
-  height: 36px;
-  color: #8b1538;
+.venue-item:hover {
+  background-color: var(--gray-100);
+  border-color: var(--gray-200);
+  box-shadow: var(--shadow-sm);
 }
 
-.venue-icon svg {
-  width: 100%;
-  height: 100%;
+.venue-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .venue-name {
-  font-size: 1.2rem;
   font-weight: 600;
-  color: #1e293b;
-  margin: 0;
-  letter-spacing: -0.025em;
+  color: var(--gray-900);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
 .venue-availability {
-  margin-bottom: 20px;
-}
-
-.availability-bar {
-  width: 100%;
-  height: 10px;
-  background-color: #e2e8f0;
-  border-radius: 6px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.availability-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #10b981, #059669);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 6px;
-}
-
-.availability-text {
-  font-weight: 500;
-  margin-bottom: 6px;
-  font-size: 0.95rem;
-}
-
-.fully-booked {
-  color: #ef4444;
-}
-
-.available-slots {
-  color: #10b981;
-}
-
-.availability-ratio {
-  font-size: 0.85rem;
-  color: #64748b;
-  font-weight: 400;
-}
-
-.venue-actions {
-  display: flex;
-  gap: 12px;
-}
-
-/* Enhanced Venues Carousel Styles */
-.venues-header-actions {
+  font-size: 0.875rem;
+  color: var(--gray-600);
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 0.25rem;
 }
 
-.venues-pagination-info {
-  font-size: 0.9rem;
-  color: #64748b;
+.venue-availability.no-slots {
+  color: var(--warning-dark);
   font-weight: 500;
-  padding: 8px 12px;
-  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-.venues-carousel-container {
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
+.book-venue-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background-color: var(--utm-maroon);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
 }
 
-.venue-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.book-venue-link:hover {
+  background-color: var(--utm-maroon-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.book-venue-link.disabled {
+  background-color: var(--gray-300);
+  color: var(--gray-500);
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Venue Pagination */
+.venue-pagination-info {
+  font-size: 0.875rem;
+  color: var(--utm-maroon);
+  background-color: var(--utm-maroon-light);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  border: 1px solid rgba(139, 21, 56, 0.2);
+}
+
+.venue-pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #8b1538;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-200);
 }
 
-.venue-nav-btn:hover:not(.disabled) {
-  background: #8b1538;
-  color: white;
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 6px 20px rgba(139, 21, 56, 0.3);
-}
-
-.venue-nav-btn.disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.venue-nav-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
-.venue-nav-prev {
-  left: -22px;
-}
-
-.venue-nav-next {
-  right: -22px;
-}
-
-.venues-carousel {
-  overflow: hidden;
-  touch-action: pan-y;
-  user-select: none;
-}
-
-.venues-grid {
+.pagination-button {
   display: flex;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-
-.venues-grid.transitioning {
-  transition-duration: 0.15s;
-}
-
-.venues-page {
-  width: 100%;
-  flex-shrink: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 28px;
-  padding: 0 4px;
-}
-
-.venues-pagination {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 24px;
-  padding: 0 4px;
-}
-
-.pagination-dots {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.pagination-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: none;
-  background: #cbd5e1;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.pagination-dot:hover {
-  background: #94a3b8;
-  transform: scale(1.2);
-}
-
-.pagination-dot.active {
-  background: #8b1538;
-  transform: scale(1.3);
-}
-
-.pagination-dot.active::after {
-  content: "";
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  border: 2px solid rgba(139, 21, 56, 0.3);
-  border-radius: 50%;
-  animation: pulse-ring 2s infinite;
-}
-
-.pagination-text {
-  font-size: 0.85rem;
-  color: #64748b;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--gray-300);
+  background-color: var(--white);
+  color: var(--gray-700);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
   font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-@keyframes pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
+.pagination-button:hover:not(:disabled) {
+  background-color: var(--utm-maroon-light);
+  border-color: var(--utm-maroon);
+  color: var(--utm-maroon);
 }
 
-/* Enhanced venue card animations */
-.venue-card {
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 12px;
-  padding: 24px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(135deg, #fafbfc, #f8fafc);
-  position: relative;
-  overflow: hidden;
-  transform: translateZ(0); /* Enable hardware acceleration */
+.pagination-button:disabled {
+  background-color: var(--gray-100);
+  color: var(--gray-400);
+  cursor: not-allowed;
+  border-color: var(--gray-200);
 }
 
-.venue-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #8b1538, #a91d42);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-  transform-origin: left;
+.pagination-numbers {
+  display: flex;
+  gap: 0.25rem;
 }
 
-.venue-card:hover {
-  transform: translateY(-3px) translateZ(0);
-  box-shadow: 0 8px 30px rgba(139, 21, 56, 0.1);
-  border-color: rgba(139, 21, 56, 0.1);
+.pagination-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--gray-300);
+  background-color: var(--white);
+  color: var(--gray-700);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-.venue-card:hover::before {
-  transform: scaleX(1);
+.pagination-number:hover {
+  background-color: var(--utm-maroon-light);
+  border-color: var(--utm-maroon);
+  color: var(--utm-maroon);
 }
 
-/* Responsive adjustments for carousel */
-@media (max-width: 1024px) {
-  .venues-page {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-  }
-
-  .venue-nav-prev {
-    left: -18px;
-  }
-
-  .venue-nav-next {
-    right: -18px;
-  }
+.pagination-number.active {
+  background-color: var(--utm-maroon);
+  border-color: var(--utm-maroon);
+  color: var(--white);
 }
 
-@media (max-width: 768px) {
-  .venues-header-actions {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .venues-pagination-info {
-    order: -1;
-  }
-
-  .venues-page {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .venue-nav-btn {
-    width: 40px;
-    height: 40px;
-  }
-
-  .venue-nav-btn svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .venue-nav-prev {
-    left: -20px;
-  }
-
-  .venue-nav-next {
-    right: -20px;
-  }
-
-  .venues-pagination {
-    flex-direction: column;
-    gap: 12px;
-    text-align: center;
-  }
+.pagination-number.active:hover {
+  background-color: var(--utm-maroon-dark);
+  border-color: var(--utm-maroon-dark);
 }
 
-@media (max-width: 480px) {
-  .venue-nav-prev {
-    left: -16px;
+/* Responsive pagination */
+@media (max-width: 640px) {
+  .venue-pagination {
+    flex-wrap: wrap;
+    gap: 0.375rem;
   }
 
-  .venue-nav-next {
-    right: -16px;
+  .pagination-button {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
   }
 
-  .venues-carousel-container {
-    margin: 0 -8px;
-    padding: 0 8px;
-  }
-}
-
-/* Touch feedback for mobile */
-@media (hover: none) and (pointer: coarse) {
-  .venue-card:active {
-    transform: scale(0.98);
+  .pagination-number {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
   }
 
-  .venue-nav-btn:active {
-    transform: translateY(-50%) scale(0.95);
-  }
-
-  .pagination-dot:active {
-    transform: scale(1.1);
-  }
-}
-
-/* Smooth scrolling for better UX */
-.venues-carousel {
-  scroll-behavior: smooth;
-}
-
-/* Loading state for venues */
-.venues-grid.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-.venues-grid.loading .venue-card {
-  animation: skeleton-loading 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes skeleton-loading {
-  0% {
-    opacity: 0.7;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* Focus states for accessibility */
-.venue-nav-btn:focus,
-.pagination-dot:focus {
-  outline: 2px solid rgba(139, 21, 56, 0.5);
-  outline-offset: 2px;
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .venues-grid {
-    transition: none;
-  }
-
-  .venue-card,
-  .venue-nav-btn,
-  .pagination-dot {
-    transition: none;
-  }
-
-  .pagination-dot.active::after {
-    animation: none;
+  .venue-pagination-info {
+    font-size: 0.75rem;
   }
 }
 
 /* Profile Section */
 .profile-section {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  padding: 32px;
-}
-
-.profile-card {
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 12px;
-  padding: 28px;
-  background: linear-gradient(135deg, #fafbfc, #f8fafc);
-}
-
-.profile-content {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.profile-avatar {
-  flex-shrink: 0;
-}
-
-.avatar-placeholder {
-  width: 72px;
-  height: 72px;
-  background: linear-gradient(135deg, #8b1538, #6d1028);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.75rem;
-  font-weight: 600;
-  box-shadow: 0 4px 20px rgba(139, 21, 56, 0.2);
-}
-
-.profile-info {
-  flex: 1;
-}
-
-.profile-name {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0 0 6px 0;
-  letter-spacing: -0.025em;
-}
-
-.profile-email {
-  color: #64748b;
-  margin: 0 0 6px 0;
-  font-size: 1rem;
-}
-
-.profile-role {
-  color: #8b1538;
-  font-weight: 500;
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-/* Enhanced Button Styles */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  text-decoration: none;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  letter-spacing: 0.01em;
-  position: relative;
+  background-color: var(--white);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
-.btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
+.profile-content {
+  padding: 2rem;
 }
 
-.btn:hover::before {
-  left: 100%;
+.profile-info {
+  margin: 0;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #8b1538, #6d1028);
-  color: white;
-  border-color: #8b1538;
-  box-shadow: 0 2px 8px rgba(139, 21, 56, 0.2);
+.profile-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray-100);
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #6d1028, #5a0d20);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 21, 56, 0.3);
+.profile-item:first-child {
+  padding-top: 0;
 }
 
-.btn-outline {
-  background-color: transparent;
-  color: #8b1538;
-  border-color: rgba(139, 21, 56, 0.3);
+.profile-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
-.btn-outline:hover {
-  background: linear-gradient(135deg, #8b1538, #6d1028);
-  color: white;
-  border-color: #8b1538;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(139, 21, 56, 0.2);
+.profile-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--utm-maroon);
 }
 
-.btn-danger {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-  border-color: #ef4444;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+.profile-details {
+  flex: 1;
 }
 
-.btn-danger:hover {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+.profile-label {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.125rem;
 }
 
-.btn-sm {
-  padding: 8px 16px;
-  font-size: 0.8rem;
+.profile-value {
+  font-weight: 500;
+  color: var(--gray-900);
 }
 
-/* Enhanced Badge Styles */
-.badge {
+.edit-profile-link {
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--utm-maroon-light);
+  color: var(--utm-maroon);
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  letter-spacing: 0.01em;
+  transition: all 0.2s ease-in-out;
 }
 
-.badge-success {
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  color: #065f46;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.badge-warning {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  color: #92400e;
-  border: 1px solid rgba(245, 158, 11, 0.2);
+.edit-profile-link:hover {
+  background-color: var(--utm-maroon);
+  color: var(--white);
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .dashboard-container {
-    padding: 20px 16px;
-  }
-
-  .dashboard-header {
-    padding: 28px 24px;
-  }
-
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .dashboard-title {
-    font-size: 1.75rem;
-  }
-
-  .stats-grid {
+@media (max-width: 1024px) {
+  .dashboard-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
   }
 
-  .stat-content {
-    padding: 24px;
+  .sidebar-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-dashboard {
+    padding: 1rem;
+  }
+
+  .welcome-title {
+    font-size: 1.5rem;
   }
 
   .section-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .bookings-content,
+  .venues-content,
+  .profile-content {
+    padding: 1.5rem;
+  }
+
+  .sidebar-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-tabs {
     flex-direction: column;
-    align-items: flex-start;
   }
 
-  .tab-navigation {
-    padding: 0 20px;
-  }
-
-  .tab-button {
-    padding: 16px 20px;
-    font-size: 0.85rem;
-  }
-
-  .bookings-content {
-    padding: 20px;
+  .bookings-table {
+    font-size: 0.875rem;
   }
 
   .bookings-table th,
   .bookings-table td {
-    padding: 12px 16px;
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .welcome-section {
+    padding: 1.5rem;
   }
 
-  .venues-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .profile-content {
+  .venue-item {
     flex-direction: column;
-    text-align: center;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .book-venue-link {
+    justify-content: center;
+    padding: 1rem 1.25rem;
+  }
+
+  /* Stack table on mobile */
+  .bookings-table tr {
+    border: 1px solid var(--gray-200);
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+    background-color: var(--white);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .bookings-table td {
+    border: none;
+    position: relative;
+    padding: 0.75rem 0;
+  }
+
+  .bookings-table td:before {
+    content: attr(data-label) ": ";
+    font-weight: 600;
+    color: var(--gray-700);
   }
 }
 
-@media (max-width: 480px) {
-  .facility-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .booking-time {
-    font-size: 0.85rem;
-  }
-
-  .empty-state {
-    padding: 40px 20px;
-  }
-
-  .dashboard-title {
-    font-size: 1.5rem;
-  }
-
-  .section-title {
-    font-size: 1.4rem;
-  }
-}
-
-/* Smooth scrolling and focus states */
-* {
-  scroll-behavior: smooth;
-}
-
-*:focus {
-  outline: 2px solid rgba(139, 21, 56, 0.5);
+/* Focus Styles for Accessibility */
+.tab-button:focus,
+.action-button:focus,
+.book-new-link:focus,
+.book-venue-link:focus,
+.edit-profile-link:focus {
+  outline: 2px solid var(--utm-maroon);
   outline-offset: 2px;
 }
 
-/* Loading states */
-.loading {
-  opacity: 0.7;
-  pointer-events: none;
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .bookings-section,
+  .venues-section,
+  .profile-section {
+    border: 2px solid var(--gray-300);
+  }
 }
 
-/* Accessibility improvements */
+/* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .student-dashboard {
+    background: white !important;
+    padding: 0;
+  }
+
+  .welcome-section {
+    background: white !important;
+    color: black !important;
+    border: 1px solid var(--gray-300);
+  }
+
+  .action-button,
+  .book-new-link,
+  .book-venue-link,
+  .edit-profile-link {
+    display: none;
   }
 }

@@ -101,8 +101,8 @@ const AdminSecurity: React.FC = () => {
           <div className="header-content">
             <Shield className="header-icon utm-maroon" />
             <div>
-              <h1 className="security-title">Security Management</h1>
-              <p className="security-subtitle">System Security & Maintenance Controls</p>
+                <h1 className="security-title" style={{ color: "white" }}>Security Management</h1>
+                <p className="security-subtitle" style={{ color: "white" }}>System Security & Maintenance Controls</p>
             </div>
           </div>
         </div>
@@ -117,8 +117,8 @@ const AdminSecurity: React.FC = () => {
                   <Lock className="card-icon utm-maroon" />
                 </div>
                 <div className="card-header-text">
-                  <h3 className="card-title">Login Attempt Lockout</h3>
-                  <p className="card-description">Control user login attempt restrictions</p>
+                    <h3 className="card-title" style={{ color: "white" }}>Login Attempt Lockout</h3>
+                    <p className="card-description" style={{ color: "white" }}>Control user login attempt restrictions</p>
                 </div>
               </div>
             </div>
@@ -176,8 +176,8 @@ const AdminSecurity: React.FC = () => {
                   <Wrench className="card-icon utm-maroon" />
                 </div>
                 <div className="card-header-text">
-                  <h3 className="card-title">Maintenance Mode</h3>
-                  <p className="card-description">Control system-wide maintenance mode</p>
+                    <h3 className="card-title" style={{ color: "white" }}>Maintenance Mode</h3>
+                    <p className="card-description" style={{ color: "white" }}>Control system-wide maintenance mode</p>
                 </div>
               </div>
             </div>

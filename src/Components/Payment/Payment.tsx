@@ -11,7 +11,7 @@ const Payment: React.FC = () => {
   const location = useLocation();
 
   // Extract timeSlotID, userEmail, venueName, startTime, and endTime from the state passed via navigation
-  const { timeSlotID, userEmail, venueName, startTime, endTime } = location.state || {};
+  const { timeSlotID, userEmail, venueName, startTime, endTime, price } = location.state || {};
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -68,8 +68,45 @@ const Payment: React.FC = () => {
       <div className="payment-card">
         <h1 className="payment-title">Complete Your Payment</h1>
         <p className="payment-description">
-          Please upload a screenshot of your payment confirmation to complete the booking.
+          Scan the QR code below to make payment for your booking of {venueName}
         </p>
+
+        {/* Booking Details */}
+        <div className="booking-details">
+          <h3>Booking Summary</h3>
+          <div className="detail-row">
+            <span>Venue:</span>
+            <span>{venueName}</span>
+          </div>
+          <div className="detail-row">
+            <span>Time:</span>
+            <span>{startTime} - {endTime}</span>
+          </div>
+          <div className="detail-row">
+            <span>Amount:</span>
+            <span>RM {price || '20.00'}</span>
+          </div>
+        </div>
+
+        {/* QR Code Section */}
+        <div className="qr-code-section">
+          <div className="qr-code-wrapper">
+            <img 
+              src="/image/duitnow-qr-code-sols247.png" 
+              alt="Payment QR Code" 
+              className="qr-code"
+            />
+          </div>
+          <div className="payment-instructions">
+            <h3>Payment Instructions:</h3>
+            <p>1. Open your mobile banking app or e-wallet</p>
+            <p>2. Scan the QR code above</p>
+            <p>3. Enter the amount: RM {price || '20.00'}</p>
+            <p>4. Complete the payment</p>
+            <p>5. Take a screenshot of the payment confirmation</p>
+            <p>6. Upload the screenshot below</p>
+          </div>
+        </div>
 
         {/* Upload Section */}
         <div className="upload-section">

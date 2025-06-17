@@ -170,8 +170,8 @@ const BookingVenueList: React.FC = () => {
       <div className="professional-header">
         <div className="header-container">
           <div className="header-content">
-            <h1 className="page-title">Sports Facility Booking</h1>
-            <p className="page-subtitle">Book your preferred sports facilities at Universiti Teknologi Malaysia</p>
+            <h1 className="page-title" style={{ color: "white" }}>Sports Facility Booking</h1>
+            <p className="page-subtitle" style={{ color: "white" }}>Book your preferred sports facilities at Universiti Teknologi Malaysia</p>
           </div>
         </div>
       </div>
@@ -453,10 +453,10 @@ const BookingVenueList: React.FC = () => {
                     <span>Booking Policies</span>
                   </div>
                   <ul className="info-list">
-                    <li>Advance booking up to 2 weeks</li>
-                    <li>Payment required within 24 hours</li>
-                    <li>48-hour cancellation policy</li>
-                    <li>Full refund for early cancellations</li>
+                    <li>Bookings are only available for today</li>
+                    <li>Payment must be made immediately to confirm your reservation</li>
+                    <li>You can cancel your booking at any time</li>
+                    <li>No refund is provided upon cancellation</li>
                   </ul>
                 </div>
               </div>

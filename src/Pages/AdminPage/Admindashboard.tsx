@@ -91,6 +91,8 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="admin-dashboard">
       {/* Header */}
+      {/* REMOVE or COMMENT OUT this block to remove the maroon header */}
+      {/*
       <header className="admin-header">
         <div className="header-left">
           <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
@@ -122,7 +124,7 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
       </header>
-
+      */}
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && <div className="mobile-overlay" onClick={toggleMobileMenu}></div>}
 
@@ -194,6 +196,25 @@ const AdminDashboard: React.FC = () => {
           </div>
         </main>
       </div>
+      <button
+        className="mobile-menu-toggle"
+        onClick={toggleMobileMenu}
+        style={{
+          display: 'block',
+          position: 'fixed',
+          top: 56, // <-- moved further down
+          left: 16,
+          zIndex: 2000,
+          background: '#8B1C2B',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '8px',
+          padding: '8px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+        }}
+      >
+        <Menu />
+      </button>
     </div>
   )
 }

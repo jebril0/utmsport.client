@@ -554,6 +554,13 @@ body {
   }
 }
 
+/* Hide the mobile menu button on screens wider than 1024px */
+@media (min-width: 1024px) {
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+}
+
 /* Focus Styles for Accessibility */
 .nav-link:focus,
 .sidebar-toggle:focus,

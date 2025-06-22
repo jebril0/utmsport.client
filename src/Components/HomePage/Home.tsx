@@ -214,7 +214,6 @@ const Home: React.FC = () => {
         <div className="container">
           <div className="footer-top">
             <div className="footer-logo">
-              <img src="/placeholder.svg?width=80&height=80" alt="UTM Logo" />
               <span>UTM Sports Facility</span>
             </div>
             <div className="footer-links-container">

@@ -12,10 +12,21 @@ const Registration: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("")
   const navigate = useNavigate()
 
+  // Password validation function
+  const validatePassword = (password: string): boolean => {
+    const minLength = password.length >= 8
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    return minLength && hasSymbol
+  }
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email.endsWith("@graduate.utm.my")) {
       alert("Only @graduate.utm.my emails are allowed!")
+      return
+    }
+    if (!validatePassword(password)) {
+      alert("Password must be at least 8 characters long and contain at least one symbol (!@#$%^&*(),.?\":{}|<>)")
       return
     }
     if (password !== confirmPassword) {
@@ -80,7 +91,7 @@ const Registration: React.FC = () => {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Password (min 8 chars, 1 symbol)"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required

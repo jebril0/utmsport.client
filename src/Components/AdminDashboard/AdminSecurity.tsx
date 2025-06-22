@@ -81,8 +81,10 @@ const AdminSecurity: React.FC = () => {
       <div className="security-container">
         <div className="security-content">
           <div className="loading-skeleton">
-            <div className="skeleton-header"></div>
-            <div className="skeleton-subtitle"></div>
+            <div className="skeleton-header">
+              <div className="skeleton-title"></div>
+              <div className="skeleton-subtitle"></div>
+            </div>
             <div className="skeleton-cards">
               <div className="skeleton-card"></div>
               <div className="skeleton-card"></div>
@@ -99,10 +101,12 @@ const AdminSecurity: React.FC = () => {
         {/* Header */}
         <div className="security-header">
           <div className="header-content">
-            <Shield className="header-icon utm-maroon" />
-            <div>
-                <h1 className="security-title" style={{ color: "white" }}>Security Management</h1>
-                <p className="security-subtitle" style={{ color: "white" }}>System Security & Maintenance Controls</p>
+            <div className="header-icon-wrapper">
+              <Shield className="header-icon" />
+            </div>
+            <div className="header-text">
+              <h1 className="security-title">Security Management</h1>
+              <p className="security-subtitle">System Security & Maintenance Controls</p>
             </div>
           </div>
         </div>
@@ -111,45 +115,42 @@ const AdminSecurity: React.FC = () => {
         <div className="security-cards">
           {/* Login Security Section */}
           <div className="security-card">
-            <div className="card-header">
-              <div className="card-header-content">
-                <div className="card-icon-container lockout-bg">
-                  <Lock className="card-icon utm-maroon" />
+            <div className="card-content">
+              <div className="card-header">
+                <div className="card-icon-wrapper lockout-icon">
+                  <Lock className="card-icon" />
                 </div>
                 <div className="card-header-text">
                     <h3 className="card-title" style={{ color: "white" }}>Login Attempt Lockout</h3>
                     <p className="card-description" style={{ color: "white" }}>Control user login attempt restrictions</p>
                 </div>
               </div>
-            </div>
 
-            <div className="card-content">
-              <div className="status-section">
-                <div className="status-indicator">
-                  <span className="status-label">Current Status:</span>
-                  <div className={`status-badge ${lockoutEnabled ? "status-enabled" : "status-disabled"}`}>
-                    {lockoutEnabled ? (
-                      <>
-                        <CheckCircle className="status-icon" />
-                        Enabled
-                      </>
-                    ) : (
-                      <>
-                        <AlertTriangle className="status-icon" />
-                        Disabled
-                      </>
-                    )}
+              <div className="card-body">
+                <div className="status-section">
+                  <div className="status-header">
+                    <span className="status-label">Current Status</span>
+                    <div className={`status-badge ${lockoutEnabled ? "status-enabled" : "status-disabled"}`}>
+                      {lockoutEnabled ? (
+                        <>
+                          <CheckCircle className="status-icon" />
+                          Enabled
+                        </>
+                      ) : (
+                        <>
+                          <AlertTriangle className="status-icon" />
+                          Disabled
+                        </>
+                      )}
+                    </div>
                   </div>
+                  <p className="status-description">
+                    {lockoutEnabled
+                      ? "Users will be temporarily locked out after multiple failed login attempts."
+                      : "No restrictions on failed login attempts. Users can attempt login unlimited times."}
+                  </p>
                 </div>
 
-                <div className="status-description">
-                  {lockoutEnabled
-                    ? "Users will be temporarily locked out after multiple failed login attempts."
-                    : "No restrictions on failed login attempts. Users can attempt login unlimited times."}
-                </div>
-              </div>
-
-              <div className="action-section">
                 <button
                   onClick={handleToggleLockout}
                   disabled={loadingLockout}
@@ -170,45 +171,42 @@ const AdminSecurity: React.FC = () => {
 
           {/* Maintenance Mode Section */}
           <div className="security-card">
-            <div className="card-header">
-              <div className="card-header-content">
-                <div className="card-icon-container maintenance-bg">
-                  <Wrench className="card-icon utm-maroon" />
+            <div className="card-content">
+              <div className="card-header">
+                <div className="card-icon-wrapper maintenance-icon">
+                  <Wrench className="card-icon" />
                 </div>
                 <div className="card-header-text">
                     <h3 className="card-title" style={{ color: "white" }}>Maintenance Mode</h3>
                     <p className="card-description" style={{ color: "white" }}>Control system-wide maintenance mode</p>
                 </div>
               </div>
-            </div>
 
-            <div className="card-content">
-              <div className="status-section">
-                <div className="status-indicator">
-                  <span className="status-label">Current Status:</span>
-                  <div className={`status-badge ${maintenanceMode ? "status-maintenance" : "status-operational"}`}>
-                    {maintenanceMode ? (
-                      <>
-                        <AlertTriangle className="status-icon" />
-                        Active
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="status-icon" />
-                        Inactive
-                      </>
-                    )}
+              <div className="card-body">
+                <div className="status-section">
+                  <div className="status-header">
+                    <span className="status-label">Current Status</span>
+                    <div className={`status-badge ${maintenanceMode ? "status-maintenance" : "status-operational"}`}>
+                      {maintenanceMode ? (
+                        <>
+                          <AlertTriangle className="status-icon" />
+                          Active
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="status-icon" />
+                          Inactive
+                        </>
+                      )}
+                    </div>
                   </div>
+                  <p className="status-description">
+                    {maintenanceMode
+                      ? "System is currently in maintenance mode. Users cannot access the booking system."
+                      : "System is operational. All booking features are available to universiti teknologi malaysia users."}
+                  </p>
                 </div>
 
-                <div className="status-description">
-                  {maintenanceMode
-                    ? "System is currently in maintenance mode. Users cannot access the booking system."
-                    : "System is operational. All booking features are available to users."}
-                </div>
-              </div>
-
-              <div className="action-section">
                 <button
                   onClick={handleToggleMaintenanceMode}
                   disabled={loadingMaintenance}
@@ -231,41 +229,39 @@ const AdminSecurity: React.FC = () => {
         {/* Security Summary */}
         <div className="security-summary">
           <div className="summary-card">
-            <div className="summary-header">
-              <h3 className="summary-title">Security Status Overview</h3>
-            </div>
-            <div className="summary-content">
-              <div className="summary-grid">
-                <div className="summary-item">
-                  <div className="summary-item-header">
-                    <Lock className="summary-icon utm-maroon" />
-                    <span className="summary-item-title">Login Security</span>
-                  </div>
-                  <div className={`summary-status ${lockoutEnabled ? "summary-secure" : "summary-warning"}`}>
-                    {lockoutEnabled ? "Protected" : "Unprotected"}
-                  </div>
+            <h3 className="summary-title">Security Status Overview</h3>
+            <div className="summary-grid">
+              <div className="summary-item">
+                <div className="summary-item-header">
+                  <Lock className="summary-icon" />
+                  <span className="summary-item-title">Login Security</span>
                 </div>
-
-                <div className="summary-item">
-                  <div className="summary-item-header">
-                    <Wrench className="summary-icon utm-maroon" />
-                    <span className="summary-item-title">System Status</span>
-                  </div>
-                  <div className={`summary-status ${maintenanceMode ? "summary-maintenance" : "summary-operational"}`}>
-                    {maintenanceMode ? "Maintenance" : "Operational"}
-                  </div>
+                <div className={`summary-status ${lockoutEnabled ? "summary-secure" : "summary-warning"}`}>
+                  {lockoutEnabled ? "Protected" : "Unprotected"}
                 </div>
+              </div>
 
-                <div className="summary-item">
-                  <div className="summary-item-header">
-                    <Shield className="summary-icon utm-maroon" />
-                    <span className="summary-item-title">Overall Security</span>
-                  </div>
-                  <div
-                    className={`summary-status ${lockoutEnabled && !maintenanceMode ? "summary-optimal" : "summary-attention"}`}
-                  >
-                    {lockoutEnabled && !maintenanceMode ? "Optimal" : "Needs Attention"}
-                  </div>
+              <div className="summary-item">
+                <div className="summary-item-header">
+                  <Wrench className="summary-icon" />
+                  <span className="summary-item-title">System Status</span>
+                </div>
+                <div className={`summary-status ${maintenanceMode ? "summary-maintenance" : "summary-operational"}`}>
+                  {maintenanceMode ? "Maintenance" : "Operational"}
+                </div>
+              </div>
+
+              <div className="summary-item">
+                <div className="summary-item-header">
+                  <Shield className="summary-icon" />
+                  <span className="summary-item-title">Overall Security</span>
+                </div>
+                <div
+                  className={`summary-status ${
+                    lockoutEnabled && !maintenanceMode ? "summary-optimal" : "summary-attention"
+                  }`}
+                >
+                  {lockoutEnabled && !maintenanceMode ? "Optimal" : "Needs Attention"}
                 </div>
               </div>
             </div>
